@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.schbusrez.mapper.RezMapper">
+    <insert id="addRez" parameterType="com.example.schbusrez.bean.RezBean">
+        insert into reservation(id,stuid,time,purpose,deppl,destination) values (#{id},#{stuid},#{time},#{use},#{from},#{to})
+    </insert>
+    <select id="findAll" resultType="com.example.schbusrez.bean.RezBean">
+        SELECT * FROM reservation;
+    </select>
+    <update id="updateRez">
+        UPDATE reservation
+        SET id=#{id},
+        stuid=#{stuid},
+        time=#{time},
+        purpose=#{use},
+        deppl=#{from},
+        destination=#{to},
+        state=#{status}
+        WHERE time=#{time}++++++++++
+    </update>
+</mapper>

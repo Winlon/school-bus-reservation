@@ -1,0 +1,27 @@
+spring:
+  datasource:
+    name: schbusrez  #数据库名
+    url: jdbc:mysql://localhost:3306/schbusrez?useUnicode=true&characterEncoding=UTF-8&allowMultiQueries=true #url
+    username: root  #用户名
+    password: qq147211xwl  #密码
+    driver-class-name: com.mysql.jdbc.Driver #数据库链接驱动
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html
+    mode: HTML
+    enabled: true
+    servlet:
+      content-type: text/html
+    cache: false
+    check-template-location: true
+  mvc:
+    view:
+      prefix: /WEB-INF/jsp/
+      suffix: .jsp
+    favicon:
+      enabled: false
+mybatis:
+  mapper-locations: classpath:*/mapper/*Mapper.xml
+  type-aliases-package: com.example.schbusrez.bean
+  configuration:
+    map-underscore-to-camel-case: true
