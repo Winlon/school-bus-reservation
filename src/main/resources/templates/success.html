@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>校车信息列表</title>
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script>
+    $(function () {
+        $.get("/success",function (carInfoList) {
+                var $table=$("<table>").appendTo($("#car-info-container"));
+                $("<thead>").append(
+                    $("<tr>").append(
+                        $("<th>").text("车牌号"),
+                        $("<th>").text("座位数"),
+                        $("<th>").text("车况"),
+                        $("<th>").text("司机电话号码"),
+                        $("<th>").text("操作")
+                    )
+                ).appendTo($table);
+                var $tbody=$("<tbody>").appendTo($table);
+                $(carInfoList).each(function (index,carInfo) {
+                    $("<tr>").append(
+                        $("<td>").text(carInfo.id),
+                        $("<td>").text(carInfo.seatnum),
+                        $("<td>").text(carInfo.cond),
+                        $("<td>").text(carInfo.tel),
+                        $("<td>").append(
+                            $("<button>").text("预约").click(function (){
+                                var appointmentDate=prompt("请输入预约日期：（格式为yyyy-MM-ddThh:mm:ss）");
+                                var stuid=prompt("请输入你的学号：")
+                                var use=prompt("请输入用途：")
+                                var from=prompt("请输入出发地点：")
+                                var to=prompt("请输入目的地：")
+                                if (appointmentDate) {
+                                    $.ajax({
+                                        type: "POST",
+                                        contentType: "application/json",
+                                        url: "/api/appointment",
+                                        data: JSON.stringify({
+                                            id: carInfo.id,
+                                            stuid: stuid,
+                                            time: appointmentDate,
+                                            use: use,
+                                            from: from,
+                                            to: to
+                                        }),
+                                        success: function (response) {
+                                            if (response === "success") {
+                                                alert("预约成功！");
+                                            } else {
+                                                alert("预约失败！");
+                                            }
+                                        }
+                                    })
+                                }
+                                    })
+                            )
+                        ).appendTo($tbody);
+                });
+                //获取预约信息
+            $('#get-booking-info').click(function () {
+                $.ajax({
+                    url:'/booking/info',
+                    type:'GET',
+                    dataType: 'json',
+                    success:function (data) {
+                        var $table=$("<table>").appendTo($("#booking-info-container"));
+                        $("<thead>").append(
+                            $("<tr>").append(
+                                $("<th>").text("车牌号"),
+                                $("<th>").text("学号"),
+                                $("<th>").text("预约日期"),
+                                $("<th>").text("用途"),
+                                $("<th>").text("出发地"),
+                                $("<th>").text("目的地"),
+                                $("<th>").text("状态")
+                            )
+                        ).appendTo($table);
+                        var $tbody=$("<tbody>").appendTo($table);
+                        $(data).each(function (index,booking) {
+                            $("<tr>").append(
+                                $("<td>").text(booking.id),
+                                $("<td>").text(booking.stuid),
+                                $("<td>").text(booking.time),
+                                $("<td>").text(booking.use),
+                                $("<td>").text(booking.from),
+                                $("<td>").text(booking.to),
+                                $("<td>").text(booking.status)
+                            ).appendTo($tbody);
+                        })
+                    }
+                })
+            })
+            });
+        });
+</script>
+</head>
+<body>
+<div id="car-info-container"></div>
+<div id="booking-info-container">
+    <h2>预约信息</h2>
+    <ul id="booking-info"></ul>
+    <button id="get-booking-info" type="button">获取预约信息</button>
+</div>
+</body>
+</html>

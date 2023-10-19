@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>校车管理系统</title>
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/4.0.0/css/bootstrap.min.css">
+</head>
+<body>
+
+
+<div class="container my-5">
+    <h1 class="text-center">校车管理系统</h1>
+
+    <!-- 增加校车 -->
+    <div class="my-5">
+        <h2>增加校车</h2>
+        <form>
+            <div class="form-group">
+                <label>车牌号</label>
+                <input type="text" class="form-control" id="plate-number-input" required>
+            </div>
+            <div class="form-group">
+                <label>座位数</label>
+                <input type="text" class="form-control" id="seats-input" required>
+            </div>
+            <div class="form-group">
+                <label>车况</label>
+                <input type="text" class="form-control" id="cond-input" required>
+            </div>
+            <div class="form-group">
+                <label>司机电话号码</label>
+                <input type="text" class="form-control" id="tel-input" required>
+            </div>
+            <button type="submit" class="btn btn-primary" id="add-bus-btn">增加</button>
+        </form>
+    </div>
+
+    <!-- 修改校车 -->
+    <div class="my-5">
+        <h2>修改校车信息</h2>
+        <form>
+            <div class="form-group">
+                <label>车牌号</label>
+                <input type="text" class="form-control" id="edit-plate-number-input" required>
+            </div>
+            <div class="form-group">
+                <label>座位数</label>
+                <input type="text" class="form-control" id="edit-seats-input" required>
+            </div>
+            <div class="form-group">
+                <label>车况</label>
+                <input type="text" class="form-control" id="edit-cond-input" required>
+            </div>
+            <div class="form-group">
+                <label>司机电话号码</label>
+                <input type="text" class="form-control" id="edit-tel-input" required>
+            </div>
+            <button type="submit" class="btn btn-primary" id="edit-bus-btn">修改</button>
+        </form>
+    </div>
+
+    <!-- 删除校车 -->
+    <div class="my-5">
+        <h2>删除校车</h2>
+        <form>
+            <div class="form-group">
+                <label>校车ID</label>
+                <input type="text" class="form-control" id="delete-plate-num-input" required>
+            </div>
+            <button type="submit" class="btn btn-danger" id="delete-bus-btn">删除</button>
+        </form>
+    </div>
+
+    <!-- 查询校车 -->
+    <div class="my-5">
+        <h2>查询校车</h2>
+        <table id="bus-table" class="table">
+            <thead>
+            <tr>
+                <th>车牌号</th>
+                <th>座位数</th>
+                <th>车况</th>
+                <th>司机电话号码</th>
+            </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <!-- 修改预约 -->
+    <div class="my-5">
+        <h2>审批预约</h2>
+        <form>
+            <div class="form-group">
+                <label>车牌号</label>
+                <input type="text" class="form-control" id="edit-id-input" required>
+            </div>
+            <div class="form-group">
+                <label>学号</label>
+                <input type="text" class="form-control" id="edit-stuid-input" required>
+            </div>
+            <div class="form-group">
+                <label>日期</label>
+                <input type="text" class="form-control" id="edit-time-input" required>
+            </div>
+            <div class="form-group">
+                <label>用途</label>
+                <input type="text" class="form-control" id="edit-use-input" required>
+            </div>
+            <div class="form-group">
+                <label>出发地</label>
+                <input type="text" class="form-control" id="edit-from-input" required>
+            </div>
+            <div class="form-group">
+                <label>目的地</label>
+                <input type="text" class="form-control" id="edit-to-input" required>
+            </div>
+            <div class="form-group">
+                <label>状态</label>
+                <input type="text" class="form-control" id="edit-status-input" required>
+            </div>
+            <button type="submit" class="btn btn-primary" id="edit-rez-btn">修改</button>
+        </form>
+    </div>
+
+    <!-- 查询校车 -->
+    <div class="my-5">
+        <h2>查询预约</h2>
+        <table id="rez-table" class="table">
+            <thead>
+            <tr>
+                <th>车牌号</th>
+                <th>学号</th>
+                <th>日期</th>
+                <th>用途</th>
+                <th>出发地</th>
+                <th>目的地</th>
+                <th>状态</th>
+            </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+</div>
+
+<script src="https://cdn.bootcss.com/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdn.bootcss.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+<script>
+    $(function () {
+
+        //查询所有预约信息
+        function loadAllRezs() {
+            $.get("/booking/info",function (result) {
+                var  rezTable=$("#rez-table tbody");
+                rezTable.empty();
+                $.each(result,function (index,rez) {
+                    var rowHtml="<tr><td>"+rez.id+"</td><td>"+rez.stuid+"</td><td>"+rez.time+"</td><td>"+rez.use+"</td><td>"+rez.from+"</td><td>"+rez.to+"</td><td>"+rez.status+"</td></tr>";
+                    rezTable.append(rowHtml);
+                })
+            })
+        }
+        
+        //查询所有校车
+        function loadAllBuses() {
+            $.get("/api/buses",function (result) {
+                var busTable=$("#bus-table tbody");
+                busTable.empty();
+                $.each(result,function (index,bus) {
+                    var rowHtml="<tr><td>"+bus.id +"</td><td>"+bus.seatnum+"</td><td>"+bus.cond+"</td><td>"+bus.tel+"</td></tr>";
+                    busTable.append(rowHtml);
+                });
+            });
+        }
+
+        //增加校车
+        $("#add-bus-btn").click(function (event) {
+            event.preventDefault();
+
+            var plateNumber=$("#plate-number-input").val();
+            var seats=$("#seats-input").val();
+            var cond=$("#cond-input").val();
+            var tel=$("#tel-input").val();
+
+            $.ajax({
+                url:"/api/buses",
+                type:"POST",
+                contentType:"application/json",
+                data:JSON.stringify({
+                    id:plateNumber,
+                    seatnum:seats,
+                    cond:cond,
+                    tel:tel
+                }),
+                success:function () {
+                    alert("增加成功");
+                    loadAllBuses();
+                    $("#plate-number-input").val("");
+                    $("#seats-input").val("");
+                    $("#cond-input").val("");
+                    $("#tel-input").val("");
+                }
+            });
+        });
+
+        //修改校车信息
+        $("#edit-bus-btn").click(function (event) {
+            event.preventDefault();
+
+            var plateNumber=$("#edit-plate-number-input").val();
+            var seats=$("#edit-seats-input").val();
+            var cond=$("#edit-cond-input").val();
+            var tel=$("#edit-tel-input").val();
+            $.ajax({
+                url:"/api/buses/"+plateNumber,
+                type:"PUT",
+                contentType:"application/json",
+                data:JSON.stringify({
+                    id:plateNumber,
+                    seatnum:seats,
+                    cond:cond,
+                    tel:tel
+                }),
+                success:function () {
+                    alert("修改成功");
+                    loadAllBuses();
+                    $("#edit-plate-number-input").val("");
+                    $("#edit-seats-input").val("");
+                    $("#edit-cond-input").val("");
+                    $("#edit-tel-input").val("");
+                }
+            });
+        });
+
+        //删除校车
+        $("#delete-bus-btn").click(function (event) {
+            event.preventDefault();
+
+            var id=$("#delete-plate-num-input").val();
+
+            $.ajax({
+                url:"/api/buses/"+id,
+                type:"DELETE",
+                success:function () {
+                    alert("删除成功");
+                    loadAllBuses();
+                    $("#delete-plate-num-input").val("");
+                }
+            });
+        });
+
+        //页面加载完成后查询所有校车信息和所有预约信息并展示
+        loadAllBuses();
+        loadAllRezs();
+
+        //审批预约
+        $("#edit-rez-btn").click(function (event) {
+            event.preventDefault();
+
+            var plateNumber=$("#edit-id-input").val();
+            var stuid=$("#edit-stuid-input").val();
+            var time=$("#edit-time-input").val();
+            var use=$("#edit-use-input").val();
+            var from=$("#edit-from-input").val();
+            var to=$("#edit-to-input").val();
+            var status=$("#edit-status-input").val();
+            $.ajax({
+                url:"/booking/info/"+plateNumber,
+                type:"PUT",
+                contentType:"application/json",
+                data:JSON.stringify({
+                    id:plateNumber,
+                    stuid:stuid,
+                    time:time,
+                    use:use,
+                    from:from,
+                    to:to,
+                    status:status
+                }),
+                success:function () {
+                    alert("修改成功");
+                    loadAllRezs();
+                    $("#edit-id-input").val("");
+                    $("#edit-stuid-input").val("");
+                    $("#edit-time-input").val("");
+                    $("#edit-use-input").val("");
+                    $("#edit-from-input").val("");
+                    $("#edit-to-input").val("");
+                    $("#edit-status-input").val("");
+                }
+            });
+        });
+    });
+</script>
+</body>
+</html>

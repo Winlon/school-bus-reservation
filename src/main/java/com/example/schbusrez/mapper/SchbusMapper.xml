@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.schbusrez.mapper.SchbusMapper">
+    <select id="showInfo" resultType="com.example.schbusrez.bean.SchbusBean">
+        SELECT * FROM schbus;
+    </select>
+
+    <select id="findBusById" resultType="com.example.schbusrez.bean.SchbusBean">
+        SELECT carnum,seatsnum,carcond,tel
+        FROM schbus
+        WHERE id=#{id}
+    </select>
+
+    <insert id="addBus">
+        INSERT INTO schbus (carnum,seatsnum,carcond,tel)
+        VALUES (#{id},#{seatnum},#{cond},#{tel})
+    </insert>
+
+    <update id="updateBus">
+        UPDATE schbus
+        SET carnum=#{id},
+        seatsnum=#{seatnum},
+        carcond=#{cond},
+        tel=#{tel}
+        WHERE carnum=#{id}
+    </update>
+    
+    <delete id="deleteBus">
+        DELETE FROM schbus WHERE carnum=#{id}
+    </delete>
+</mapper>

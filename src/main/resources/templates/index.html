@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>校车信息列表</title>
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script>
+        $(function() {
+            // 异步获取校车信息列表并在页面上展示
+            $.getJSON("/api/car-info", function(carInfoList) {
+                var $table = $("<table>").appendTo($("#car-info-container"));
+                $("<thead>").append(
+                    $("<tr>").append(
+                        $("<th>").text("车牌号"),
+                        $("<th>").text("车型"),
+                        $("<th>").text("座位数"),
+                        $("<th>").text("操作")
+                    )
+                ).appendTo($table);
+                var $tbody = $("<tbody>").appendTo($table);
+                $(carInfoList).each(function(index, carInfo) {
+                    $("<tr>").append(
+                        $("<td>").text(carInfo.carNumber),
+                        $("<td>").text(carInfo.carType),
+                        $("<td>").text(carInfo.seats),
+                        $("<td>").append(
+                            $("<button>").text("预约").click(function() {
+                                var appointmentDate = prompt("请输入预约日期：（格式为yyyy-MM-dd）");
+                                if (appointmentDate) {
+                                    $.ajax({
+                                        type: "POST",
+                                        contentType: "application/json",
+                                        url: "/api/appointment",
+                                        data: JSON.stringify({carId: carInfo.id, appointmentDate: appointmentDate}),
+                                        success: function() {
+                                            alert("预约成功！");
+                                        }
+                                    });
+                                }
+                            })
+                        )
+                    ).appendTo($tbody);
+                });
+            });
+        });
+    </script>
+</head>
+<body>
+<div id="car-info-container"></div>
+</body>
+</html>
